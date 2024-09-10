@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model item {
+  // itemCode: 정수형, 기본 키
+  itemCode  Int @id
+  itemName  String
+  atk       Int
+  price     Int
+}
+
+model character {
+  characterId Int @id
+}
+
+model account {
+  accountId Int @id
+}
+
+
+// 이 파일을 수정한 뒤엔 저장 후 터미널에 "npx prisma db push"를 실행해주세요.
+// 그리고 MYSQL의 database를 refresh 합니다.
