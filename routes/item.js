@@ -55,7 +55,7 @@ router.get('/item/:itemCode', async (req, res) => {
   try {
     const itemCode = req.params.itemCode; // String
 
-    // 찾아드렸습니다.
+    // 찾았습니다.
     const findItem = await prisma.item.findUnique({
       where: {
         itemCode: +itemCode, // 앞에 parseInt 또는 + 붙이면 숫자로 바뀜
