@@ -1,5 +1,8 @@
+// routes/character.js
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import authMiddleware from '../middlewares/auth.js';
 
 const router = express.Router();
 
@@ -9,19 +12,43 @@ const prisma = new PrismaClient({
   errorFormat: 'pretty',
 });
 
-// [필수] 3. 캐릭터 생성
-router.post('/character/create', (req, res) => {});
+// **"회원"에 귀속된 캐릭터를 생성하기**
+router.post('/character/createfromuser', authMiddleware, async (req, res) => {
+  const { name } = req.body;
+  const { accountId } = req.accountInfo; // authMiddleware에서 accountId를 가져옴
 
-// [필수] 4. 캐릭터 삭제
-router.post('/character/delete', (req, res) => {});
+  try {
+    // 같은 이름의 캐릭터가 있는지 확인
+    const existingCharacter = await prisma.character.findUnique({
+      where: { name },
+    });
 
-// [필수] 5. 캐릭터 상세 조회
-router.get('/character/detail', (req, res) => {});
+    if (existingCharacter) {
+      return res.status(400).json({ error: '이미 존재하는 캐릭터 이름입니다.' });
+    }
 
-// 6-3. [도전] "회원"에 귀속된 캐릭터를 생성하기
-router.post('/character/createfromuser', (req, res) => {});
+    // 새로운 캐릭터 생성
+    const newCharacter = await prisma.character.create({
+      data: {
+        name: name, // 캐릭터 이름
+        health: 500,
+        power: 100,
+        money: 10000,
+        account: { connect: { accountId } }, // 계정에 연결
+      },
+    });
 
-// 6-4. [도전] "회원"에 귀속된 캐릭터를 삭제하기
-router.post('/character/createfrom', (req, res) => {});
+    res.status(200).json({ message: '캐릭터가 생성되었습니다.', character_Info: newCharacter });
+  } catch (error) {
+    console.error('캐릭터 생성 오류:', error);
+    res.status(500).json({ error: '캐릭터 생성에 실패했습니다.' });
+  }
+});
+
+// "회원"에 귀속된 캐릭터를 삭제하기
+router.post('/character/delete', authMiddleware, async (req, res) => {});
+
+// 캐릭터 상세 조회하기
+router.get('/character/detail', authMiddleware, async (req, res) => {});
 
 export default router;
