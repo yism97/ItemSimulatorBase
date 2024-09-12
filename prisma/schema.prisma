@@ -21,17 +21,21 @@ model item {
   price     Int
 }
 
-model character {
-  characterId String @id
-  health      Int    @default(500)
-  power       Int    @default(100)
-  money       Int    @default(10000)
+model Account {
+  accountId String    @id @default(uuid()) // UUID로 accountId 설정
+  userName  String
+  password  String
+  characters Character[] // Account와 Character의 관계 설정 (1:N)
 }
 
-model account {
-  accountId String @id
-  password  String
-  userName  String
+model Character {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique // 캐릭터 이름이 유일해야 함
+  health    Int       @default(500)
+  power     Int       @default(100)
+  money     Int       @default(10000)
+  account   Account   @relation(fields: [accountId], references: [accountId]) // 계정과 연결
+  accountId String
 }
 
 

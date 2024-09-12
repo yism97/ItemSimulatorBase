@@ -1,3 +1,4 @@
+// routes/account.js
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import joi from 'joi';
@@ -38,7 +39,7 @@ router.post('/account/join', async (req, res) => {
     const userName = req.body.userName;
 
     // 비밀번호는 평문으로 쓰지말고 해싱해서 저장필요
-    // 단방향 암호화 !
+    // 단방향 암호화
     const hashedPassword = await bcrypt.hash(password, 10);
     const existAccount = await prisma.account.findUnique({
       where: {
@@ -66,8 +67,6 @@ router.post('/account/join', async (req, res) => {
     console.log(error);
   }
 });
-
-const users = {};
 
 // 6-2. [도전] 로그인
 // 아이디, 비밀번호, 비밀번호 확인, 이름 넘기기

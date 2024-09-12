@@ -2,6 +2,9 @@ import express from 'express';
 import itemRouter from './routes/item.js';
 import characterRouter from './routes/character.js';
 import accountRouter from './routes/account.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 // [도전] 환경변수로 분리할 수 있지 않을까?
